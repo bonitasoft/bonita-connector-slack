@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<implementation:connectorImplementation xmlns:implementation="http://www.bonitasoft.org/ns/connector/implementation/6.0">
+  <implementationId>${send-message-impl-id}</implementationId> <!-- Id of the implementation -->
+  <implementationVersion>${send-message-impl-version}</implementationVersion> <!-- Version of the implementation -->
+  <definitionId>${send-message-definition-id}</definitionId> <!-- Id of the definition implemented -->
+  <definitionVersion>${send-message-definition-version}</definitionVersion> <!-- Version of the definition implemented -->
+  <implementationClassname>${send-message-main-class}</implementationClassname> <!-- Path to the main implementation class -->
+  <description>Send a slack message</description>
+
+<!-- retrieved from the pom.xml at build time -->
+${connector-dependencies}
+
+</implementation:connectorImplementation>

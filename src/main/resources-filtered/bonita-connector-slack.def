@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definition:ConnectorDefinition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:definition="http://www.bonitasoft.org/ns/connector/definition/6.1">
+    <id>${send-message-definition-id}</id>
+    <version>${send-message-definition-version}</version>
+    <icon>slack.png</icon> 
+    <category icon="slack.png" id="Slack"/> 
+
+    <input name="tokenInput" type="java.lang.String" mandatory="true" />
+    <input name="channelIdInput" type="java.lang.String" mandatory="true" />
+    <input name="messageInput" type="java.lang.String" mandatory="true"/>
+
+    <output name="tsOutput" type="java.lang.String"/>
+
+    <page id="configurationPage">
+        <widget xsi:type="definition:Text" id="tokenInputWidget" inputName="tokenInput"/>
+        <widget xsi:type="definition:Text" id="channelIdInputWidget" inputName="channelIdInput"/>
+        <widget xsi:type="definition:TextArea" id="messageInputWidget" inputName="messageInput"/>
+    </page>
+</definition:ConnectorDefinition>
