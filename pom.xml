@@ -5,7 +5,7 @@
 
     <groupId>org.bonitasoft.connectors</groupId>
     <artifactId>bonita-connector-slack</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <name>bonita-connector-slack</name>
     <description>Slack Connector for Bonita</description>
 	<url>https://www.bonitasoft.com</url>
