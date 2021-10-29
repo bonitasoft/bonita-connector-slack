@@ -9,6 +9,23 @@
     <name>bonita-connector-slack</name>
     <packaging>jar</packaging>
 
+    <developers>
+        <developer>
+            <id>bonitasoft</id>
+            <name>Bonitasoft</name>
+            <email>rd.user@bonitasoft.com</email>
+            <organization>Bonitasoft</organization>
+            <organizationUrl>https://www.bonitasoft.com</organizationUrl>
+        </developer>
+    </developers>
+
+    <licenses>
+        <license>
+            <name>GPL-v2.0</name>
+            <url>http://www.gnu.org/licenses/gpl-2.0.txt</url>
+        </license>
+    </licenses>
+
     <properties>
         <!-- Maven -->
         <java.version>11</java.version>
@@ -231,5 +248,23 @@
             </plugin>
         </plugins>
     </build>
+
+    <distributionManagement>
+        <!-- Central Repository -->
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
+    <scm>
+        <developerConnection>scm:git:git@github.com:bonitasoft/bonita-connector-slack.git</developerConnection>
+        <connection>scm:git:git@github.com:bonitasoft/bonita-connector-slack.git</connection>
+        <url>https://github.com/bonitasoft/bonita-connector-slack</url>
+        <tag>HEAD</tag>
+    </scm>
 
 </project>
