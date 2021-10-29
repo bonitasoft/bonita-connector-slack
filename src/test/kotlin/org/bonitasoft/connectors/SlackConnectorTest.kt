@@ -11,8 +11,10 @@ import io.mockk.every
 import com.slack.api.Slack
 import com.slack.api.methods.MethodsClient
 import com.slack.api.methods.response.chat.ChatPostMessageResponse
-import com.slack.api.RequestConfigurator
 import com.slack.api.methods.request.chat.ChatPostMessageRequest
+import com.slack.api.model.block.Blocks
+import com.slack.api.model.block.composition.BlockCompositions.plainText
+import org.bonitasoft.connectors.model.SlackConnectorBlocks
 import org.bonitasoft.engine.connector.ConnectorException
 
 class SlackConnectorTest {
@@ -26,47 +28,36 @@ class SlackConnectorTest {
 
     @Test
     fun `should throw exception if mandatory input is missing`() {
-        val params1 = mapOf(SlackConnector.TOKEN_INPUT to null, SlackConnector.ID_INPUT to "id", SlackConnector.MESSAGE_INPUT to "message")
-        val params2 = mapOf(SlackConnector.TOKEN_INPUT to "token", SlackConnector.ID_INPUT to null, SlackConnector.MESSAGE_INPUT to "message")
-        val params3 = mapOf(SlackConnector.TOKEN_INPUT to "token", SlackConnector.ID_INPUT to "id", SlackConnector.MESSAGE_INPUT to null)
+        val params1 = mapOf(SlackConnector.TOKEN_INPUT to null, SlackConnector.ID_INPUT to "id")
+        val params2 = mapOf(SlackConnector.TOKEN_INPUT to "token", SlackConnector.ID_INPUT to null)
 
         connector.setInputParameters(params1)
         assertThatThrownBy { connector.validateInputParameters() }
                 .isExactlyInstanceOf(ConnectorValidationException::class.java)
         
         connector.setInputParameters(params2)
-        assertThatThrownBy { connector.validateInputParameters() }
-                .isExactlyInstanceOf(ConnectorValidationException::class.java)
-        
-        connector.setInputParameters(params3)
         assertThatThrownBy { connector.validateInputParameters() }
                 .isExactlyInstanceOf(ConnectorValidationException::class.java)
     }
 
     @Test
     fun `should throw exception if mandatory input is empty`() {
-        val params1 = mapOf(SlackConnector.TOKEN_INPUT to "", SlackConnector.ID_INPUT to "id", SlackConnector.MESSAGE_INPUT to "message")
-        val params2 = mapOf(SlackConnector.TOKEN_INPUT to "token", SlackConnector.ID_INPUT to "", SlackConnector.MESSAGE_INPUT to "message")
-        val params3 = mapOf(SlackConnector.TOKEN_INPUT to "token", SlackConnector.ID_INPUT to "id", SlackConnector.MESSAGE_INPUT to "")
+        val params1 = mapOf(SlackConnector.TOKEN_INPUT to "", SlackConnector.ID_INPUT to "id")
+        val params2 = mapOf(SlackConnector.TOKEN_INPUT to "token", SlackConnector.ID_INPUT to "")
 
         connector.setInputParameters(params1)
         assertThatThrownBy { connector.validateInputParameters() }
                 .isExactlyInstanceOf(ConnectorValidationException::class.java)
         
         connector.setInputParameters(params2)
-        assertThatThrownBy { connector.validateInputParameters() }
-                .isExactlyInstanceOf(ConnectorValidationException::class.java)
-        
-        connector.setInputParameters(params3)
         assertThatThrownBy { connector.validateInputParameters() }
                 .isExactlyInstanceOf(ConnectorValidationException::class.java)
     }
 
     @Test
     fun `should throw exception if mandatory input is not a string`() {
-        val params1 = mapOf(SlackConnector.TOKEN_INPUT to 1, SlackConnector.ID_INPUT to "id", SlackConnector.MESSAGE_INPUT to "message")
-        val params2 = mapOf(SlackConnector.TOKEN_INPUT to "token", SlackConnector.ID_INPUT to 1, SlackConnector.MESSAGE_INPUT to "message")
-        val params3 = mapOf(SlackConnector.TOKEN_INPUT to "token", SlackConnector.ID_INPUT to "id", SlackConnector.MESSAGE_INPUT to 1)
+        val params1 = mapOf(SlackConnector.TOKEN_INPUT to 1, SlackConnector.ID_INPUT to "id")
+        val params2 = mapOf(SlackConnector.TOKEN_INPUT to "token", SlackConnector.ID_INPUT to 1)
 
         connector.setInputParameters(params1)
         assertThatThrownBy { connector.validateInputParameters() }
@@ -75,17 +66,45 @@ class SlackConnectorTest {
         connector.setInputParameters(params2)
         assertThatThrownBy { connector.validateInputParameters() }
                 .isExactlyInstanceOf(ConnectorValidationException::class.java)
-        
+    }
+
+    @Test
+    fun `should throw exception if message and blocks are empty`() {
+        val params1 = mapOf(SlackConnector.TOKEN_INPUT to "token", SlackConnector.ID_INPUT to "id")
+        val params2 = mapOf(SlackConnector.TOKEN_INPUT to "token", SlackConnector.ID_INPUT to "id",
+            SlackConnector.MESSAGE_INPUT to "")
+        val params3 = mapOf(SlackConnector.TOKEN_INPUT to "token", SlackConnector.ID_INPUT to "id",
+            SlackConnector.BLOCKS_INPUT to SlackConnectorBlocks())
+
+        connector.setInputParameters(params1)
+        assertThatThrownBy { connector.validateInputParameters() }
+            .isExactlyInstanceOf(ConnectorValidationException::class.java)
+
+        connector.setInputParameters(params2)
+        assertThatThrownBy { connector.validateInputParameters() }
+            .isExactlyInstanceOf(ConnectorValidationException::class.java)
+
         connector.setInputParameters(params3)
         assertThatThrownBy { connector.validateInputParameters() }
-                .isExactlyInstanceOf(ConnectorValidationException::class.java)
+            .isExactlyInstanceOf(ConnectorValidationException::class.java)
     }
 
     @Test
     fun `should validate valid input`() {
-        val params = mapOf(SlackConnector.TOKEN_INPUT to "token", SlackConnector.ID_INPUT to "id", SlackConnector.MESSAGE_INPUT to "message")
+        val params1 = mapOf(SlackConnector.TOKEN_INPUT to "token",
+            SlackConnector.ID_INPUT to "id",
+            SlackConnector.MESSAGE_INPUT to "message")
 
-        connector.setInputParameters(params)
+        val blocks = SlackConnectorBlocks()
+        blocks.addBlockAtTheEnd(Blocks.section { section -> section.text(plainText("Hello!")) })
+        val params2 = mapOf(SlackConnector.TOKEN_INPUT to "token",
+            SlackConnector.ID_INPUT to "id",
+            SlackConnector.BLOCKS_INPUT to blocks)
+
+        connector.setInputParameters(params1)
+        connector.validateInputParameters()
+
+        connector.setInputParameters(params2)
         connector.validateInputParameters()
     }
     
@@ -96,17 +115,21 @@ class SlackConnectorTest {
         val slack = mockk<Slack>()
         val methodsClient = mockk<MethodsClient>()
         val request = mockk<ChatPostMessageRequest>()
-        val result : ChatPostMessageResponse = ChatPostMessageResponse()
-        result.setOk(true)
-        result.setTs(expectedOutput)
-        connector = spyk<SlackConnector>()
+        val result  = ChatPostMessageResponse()
+        result.isOk = true
+        result.ts = expectedOutput
+        connector = spyk()
         
         every { methodsClient.chatPostMessage(request) } returns result
         every { slack.methods(any()) } returns methodsClient
         every { connector.createSlackClient() } returns slack
         every { connector.createPostMessageRequest() } returns request
         
-        val params = mapOf(SlackConnector.TOKEN_INPUT to "token", SlackConnector.ID_INPUT to "id", SlackConnector.MESSAGE_INPUT to "message")
+        val params = mapOf(SlackConnector.TOKEN_INPUT to "token",
+            SlackConnector.ID_INPUT to "id",
+            SlackConnector.MESSAGE_INPUT to "message",
+            SlackConnector.BLOCKS_INPUT to SlackConnectorBlocks())
+
         connector.setInputParameters(params)
         
         // when
@@ -122,9 +145,9 @@ class SlackConnectorTest {
         val slack = mockk<Slack>()
         val methodsClient = mockk<MethodsClient>()
         val request = mockk<ChatPostMessageRequest>()
-        val result : ChatPostMessageResponse = ChatPostMessageResponse()
-        result.setOk(false)
-        connector = spyk<SlackConnector>()
+        val result  = ChatPostMessageResponse()
+        result.isOk = false
+        connector = spyk()
         
         every { methodsClient.chatPostMessage(request) } returns result
         every { slack.methods(any()) } returns methodsClient

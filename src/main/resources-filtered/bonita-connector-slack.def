@@ -7,7 +7,8 @@
 
     <input name="tokenInput" type="java.lang.String" mandatory="true" />
     <input name="channelIdInput" type="java.lang.String" mandatory="true" />
-    <input name="messageInput" type="java.lang.String" mandatory="true"/>
+    <input name="messageInput" type="java.lang.String"/>
+    <input name="blocksInput" type="org.bonitasoft.connectors.model.SlackConnectorBlocks"/>
 
     <output name="tsOutput" type="java.lang.String"/>
 
@@ -15,5 +16,6 @@
         <widget xsi:type="definition:Text" id="tokenInputWidget" inputName="tokenInput"/>
         <widget xsi:type="definition:Text" id="channelIdInputWidget" inputName="channelIdInput"/>
         <widget xsi:type="definition:TextArea" id="messageInputWidget" inputName="messageInput"/>
+        <widget xsi:type="definition:ScriptEditor" id="blocksInputWidget" inputName="blocksInput" interpreter="GROOVY"/>
     </page>
 </definition:ConnectorDefinition>

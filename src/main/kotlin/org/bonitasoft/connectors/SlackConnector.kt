@@ -2,6 +2,9 @@ package org.bonitasoft.connectors
 
 import com.slack.api.Slack
 import com.slack.api.methods.request.chat.ChatPostMessageRequest
+import com.slack.api.model.block.Blocks.section
+import com.slack.api.model.block.composition.BlockCompositions.plainText
+import org.bonitasoft.connectors.model.SlackConnectorBlocks
 import org.bonitasoft.engine.connector.AbstractConnector
 import org.bonitasoft.engine.connector.ConnectorException
 import org.bonitasoft.engine.connector.ConnectorValidationException
@@ -15,20 +18,30 @@ open class SlackConnector : AbstractConnector() {
         const val TOKEN_INPUT = "tokenInput"
         const val ID_INPUT = "channelIdInput"
         const val MESSAGE_INPUT = "messageInput"
+        const val BLOCKS_INPUT = "blocksInput"
         const val TS_OUTPUT = "tsOutput"
     }
 
     override fun validateInputParameters() {
         checkMandatoryStringInput(TOKEN_INPUT)
         checkMandatoryStringInput(ID_INPUT)
-        checkMandatoryStringInput(MESSAGE_INPUT)
+        checkMessageOrBlocksArePresent()
+    }
+
+    private fun checkMessageOrBlocksArePresent() {
+        val message = getInputParameter(MESSAGE_INPUT)
+        val blocks = getInputParameter(BLOCKS_INPUT)
+        if ((message !is String || message.isBlank())
+            && (blocks == null || (blocks as SlackConnectorBlocks).getBlocks().isEmpty())) {
+            throw ConnectorValidationException(this, "A message or some blocks are required to send a slack message.")
+        }
     }
 
     private fun checkMandatoryStringInput(inputName: String) {
         val value = getInputParameter(inputName)
         if (value !is String) {
             throw ConnectorValidationException(this, "'$inputName' parameter must be a String.")
-        } else if (value.isEmpty()) {
+        } else if (value.isBlank()) {
             throw ConnectorValidationException(this, "Mandatory parameter '$inputName' is missing.")
         }
     }
@@ -54,9 +67,15 @@ open class SlackConnector : AbstractConnector() {
     fun createPostMessageRequest(): ChatPostMessageRequest {
         val channel = getAndLogStringParameter(ID_INPUT)
         val message = getAndLogStringParameter(MESSAGE_INPUT)
+        val blocks = (getInputParameter(BLOCKS_INPUT) ?: SlackConnectorBlocks()) as SlackConnectorBlocks
+
+        if (message.isNotBlank()) {
+            blocks.addBlockAtTheBeginning(section { section -> section.text(plainText(message)) })
+        }
+
         return ChatPostMessageRequest.builder()
             .channel(channel)
-            .text(message)
+            .blocks(blocks.getBlocks())
             .build()
     }
 
@@ -65,7 +84,7 @@ open class SlackConnector : AbstractConnector() {
     }
 
     private fun getAndLogStringParameter(parameterName: String): String {
-        val value: String = getInputParameter(parameterName) as String
+        val value: String = (getInputParameter(parameterName) ?: "") as String
         logger.info { "$parameterName: $value" }
         return value
     }
