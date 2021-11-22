@@ -1,0 +1,54 @@
+= Bonita connector Slack
+
+This connector offers the possibility to send messages to a Slack channel. +
+To be used, a dedicated https://api.slack.com/authentication/basics[Slack application] with write permissions must be installed on the target Slack organization.
+
+== Usage
+The connector has four mandatory inputs: 
+
+- *OAuth Access Token*: The OAuth access token of the installed slack application. See https://api.slack.com/apps[Your slack applications] to find it.
+- *Channel or Conversation ID*: Defines in with channel / conversation the message is to be sent. To retrieve it, right click on the channel, copy the link of the channel and keep the last segment of the URL (something like _CJC9BH4A9_)
+- *Notification*: The text that appears on the notification received by users if they are notified. It is supposed to be a short summary of the message content.
+- *Blocks*: The real message to post on slack. More details in the section bellow.
+
+=== Build a message using the Slack SDK for Java
+
+The documentation of this SDK can be found https://slack.dev/java-slack-sdk/guides/composing-messages[here]. +
+You can also use the https://app.slack.com/block-kit-builder/[block kit builder] to get an idea of what is possible, but it doesn't generate Java code.
+
+[WARNING]
+====
+Bonita connector scripts are written with Groovy, thus the syntax to use the sdk differs a bit from the examples of the Slack documentation.
+====
+
+The input *blocks* expected by the connector is of type `org.bonitasoft.connectors.model.SlackConnectorBlocks`, an internal class that wraps a list of `com.slack.api.model.block.LayoutBlock`.
+
+Here is an example of a script that build a message using the Slack SDK: 
+
+[source, Groovy]
+----
+import org.bonitasoft.connectors.model.SlackConnectorBlocks
+
+import com.slack.api.model.block.Blocks
+
+import static com.slack.api.model.block.composition.BlockCompositions.plainText
+import static com.slack.api.model.block.composition.BlockCompositions.markdownText
+
+def header = Blocks.header{ it.text(plainText("Hello worlds!")) }
+def divider = Blocks.divider()
+
+def checkboxes = Blocks.section{
+    it.text(markdownText("Hope your are having a wonderful day :smiley:")
+}
+
+return new SlackConnectorBlocks(header, divider, checkboxes)
+----
+
+== Build
+
+To build this project, run the following command at the root of the project: 
+
+[source, bash]
+----
+./mvnw clean package
+----
