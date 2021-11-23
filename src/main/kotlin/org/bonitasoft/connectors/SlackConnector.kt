@@ -2,8 +2,6 @@ package org.bonitasoft.connectors
 
 import com.slack.api.Slack
 import com.slack.api.methods.request.chat.ChatPostMessageRequest
-import com.slack.api.model.block.Blocks.section
-import com.slack.api.model.block.composition.BlockCompositions.plainText
 import org.bonitasoft.connectors.model.SlackConnectorBlocks
 import org.bonitasoft.engine.connector.AbstractConnector
 import org.bonitasoft.engine.connector.ConnectorException
@@ -17,7 +15,7 @@ open class SlackConnector : AbstractConnector() {
     companion object {
         const val TOKEN_INPUT = "tokenInput"
         const val ID_INPUT = "channelIdInput"
-        const val MESSAGE_INPUT = "messageInput"
+        const val NOTIFICATION_MESSAGE_INPUT = "notificationMessageInput"
         const val BLOCKS_INPUT = "blocksInput"
         const val TS_OUTPUT = "tsOutput"
     }
@@ -25,14 +23,10 @@ open class SlackConnector : AbstractConnector() {
     override fun validateInputParameters() {
         checkMandatoryStringInput(TOKEN_INPUT)
         checkMandatoryStringInput(ID_INPUT)
-        checkMessageOrBlocksArePresent()
-    }
+        checkMandatoryStringInput(NOTIFICATION_MESSAGE_INPUT)
 
-    private fun checkMessageOrBlocksArePresent() {
-        val message = getInputParameter(MESSAGE_INPUT)
         val blocks = getInputParameter(BLOCKS_INPUT)
-        if ((message !is String || message.isBlank())
-            && (blocks == null || (blocks as SlackConnectorBlocks).getBlocks().isEmpty())) {
+        if (blocks == null || (blocks as SlackConnectorBlocks).getBlocks().isEmpty()) {
             throw ConnectorValidationException(this, "A message or some blocks are required to send a slack message.")
         }
     }
@@ -66,15 +60,12 @@ open class SlackConnector : AbstractConnector() {
 
     fun createPostMessageRequest(): ChatPostMessageRequest {
         val channel = getAndLogStringParameter(ID_INPUT)
-        val message = getAndLogStringParameter(MESSAGE_INPUT)
+        val message = getAndLogStringParameter(NOTIFICATION_MESSAGE_INPUT)
         val blocks = (getInputParameter(BLOCKS_INPUT) ?: SlackConnectorBlocks()) as SlackConnectorBlocks
-
-        if (message.isNotBlank()) {
-            blocks.addBlockAtTheBeginning(section { section -> section.text(plainText(message)) })
-        }
 
         return ChatPostMessageRequest.builder()
             .channel(channel)
+            .text(message)
             .blocks(blocks.getBlocks())
             .build()
     }
