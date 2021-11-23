@@ -34,7 +34,7 @@ import com.slack.api.model.block.Blocks
 import static com.slack.api.model.block.composition.BlockCompositions.plainText
 import static com.slack.api.model.block.composition.BlockCompositions.markdownText
 
-def header = Blocks.header{ it.text(plainText("Hello worlds!")) }
+def header = Blocks.header{ it.text(plainText("Hello world!")) }
 def divider = Blocks.divider()
 
 def checkboxes = Blocks.section{
