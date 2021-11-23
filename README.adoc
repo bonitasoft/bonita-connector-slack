@@ -37,11 +37,11 @@ import static com.slack.api.model.block.composition.BlockCompositions.markdownTe
 def header = Blocks.header{ it.text(plainText("Hello world!")) }
 def divider = Blocks.divider()
 
-def checkboxes = Blocks.section{
+def section = Blocks.section{
     it.text(markdownText("Hope your are having a wonderful day :smiley:")
 }
 
-return new SlackConnectorBlocks(header, divider, checkboxes)
+return new SlackConnectorBlocks(header, divider, section)
 ----
 
 == Build
