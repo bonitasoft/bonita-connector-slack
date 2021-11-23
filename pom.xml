@@ -5,7 +5,7 @@
 
     <groupId>org.bonitasoft.connectors</groupId>
     <artifactId>bonita-connector-slack</artifactId>
-    <version>2.0.1-SNAPSHOT</version>
+    <version>2.0.1</version>
     <name>bonita-connector-slack</name>
     <description>Slack Connector for Bonita</description>
 	<url>https://www.bonitasoft.com</url>
@@ -38,7 +38,7 @@
 
         <!-- Send Slack message connector -->
         <send-message-definition-id>send-message</send-message-definition-id>
-        <send-message-definition-version>2.0.0</send-message-definition-version>
+        <send-message-definition-version>2.0.1</send-message-definition-version>
         <send-message-impl-id>${send-message-definition-id}-impl</send-message-impl-id>
         <send-message-impl-version>${project.version}</send-message-impl-version>
         <send-message-main-class>org.bonitasoft.connectors.SlackConnector</send-message-main-class>
