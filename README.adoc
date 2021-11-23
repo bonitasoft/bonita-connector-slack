@@ -94,7 +94,7 @@ To build this project, run the following command at the root of the project:
 
 To create a release:
 
-* push a release commit on the main branch. This commit should update the pom version, and eventually the definition / implementation versions. 
+* Push a release commit on the main branch. This commit should update the pom version (remove -SNAPSHOT), and eventually the definition / implementation versions. 
 * Start the Github action _create release_. You'll have to define the release version, which should match the pom.xml version.
 * When the release is done, push a new commit on the next branch to prepare the next dev version (e.g 1.0.0 -> 1.0.1-SNAPSHOT)
 * Do not forget to close and release the corresponding staging repository on sonartype.
