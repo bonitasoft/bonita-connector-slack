@@ -30,12 +30,12 @@ endif::[]
 :uri-org: https://github.com/{orga}
 :uri-repo: {uri-org}/{project-artifact-id}
 ifdef::env-site,env-yard[]
-:uri-rel-file-base: {uri-repo}/blob/master/
-:uri-rel-tree-base: {uri-repo}/tree/master/
+:uri-rel-file-base: {uri-repo}/blob/main/
+:uri-rel-tree-base: {uri-repo}/tree/main/
 endif::[]
 :uri-changelog: {uri-rel-file-base}CHANGELOG.adoc
 :uri-contribute: {uri-rel-file-base}CONTRIBUTING.adoc
-:uri-license: {uri-rel-file-base}LICENSE.md
+:uri-license: {uri-rel-file-base}LICENSE
 
 ifdef::status[]
 image:{uri-repo}/actions/workflows/build.yml/badge.svg[Build,link="{uri-repo}/actions?query=build"]
