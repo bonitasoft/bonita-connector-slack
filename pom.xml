@@ -31,7 +31,7 @@
     <properties>
         <!-- Maven -->
         <java.version>11</java.version>
-        <kotlin.version>1.5.31</kotlin.version>
+        <kotlin.version>1.7.22</kotlin.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.build.timestamp.format>yyyy.MM.dd-hh.mm</maven.build.timestamp.format>
@@ -52,7 +52,7 @@
         <!-- Tests -->
         <junit-jupiter-engine.version>5.9.1</junit-jupiter-engine.version>
         <junit-platform-runner.version>1.8.1</junit-platform-runner.version>
-        <assertj-core.version>3.21.0</assertj-core.version>
+        <assertj-core.version>3.23.1</assertj-core.version>
         <mockk.version>1.12.0</mockk.version>
         <logback-classic.version>1.2.6</logback-classic.version>
 
@@ -60,12 +60,12 @@
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
-        <maven-assembly-plugin.version>3.1.1</maven-assembly-plugin.version>
+        <maven-assembly-plugin.version>3.4.2</maven-assembly-plugin.version>
         <groovy-maven-plugin.version>2.1.1</groovy-maven-plugin.version>
         <groovy-all.version>2.4.16</groovy-all.version>
         <maven-surefire-plugin.version>3.0.0-M4</maven-surefire-plugin.version>
         <maven-source-plugin.version>3.2.0</maven-source-plugin.version>
-        <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
+        <maven-gpg-plugin.version>3.0.1</maven-gpg-plugin.version>
         <dokka.version>1.5.31</dokka.version>
     </properties>
 
