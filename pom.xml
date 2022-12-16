@@ -44,7 +44,7 @@
         <send-message-main-class>org.bonitasoft.connectors.SlackConnector</send-message-main-class>
 
         <!-- Connector dependencies -->
-        <slack.version>1.12.1</slack.version>
+        <slack.version>1.27.2</slack.version>
 
         <!-- Bonita -->
         <bonita.engine.version>7.13.0</bonita.engine.version>
