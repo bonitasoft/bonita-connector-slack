@@ -23,26 +23,23 @@ jobs:
         with:
           java-version: 11
           distribution: temurin
-      
+
       - name: changelog
-        uses: scottbrenner/generate-changelog-action@master 
+        uses: scottbrenner/generate-changelog-action@master
         id: Changelog
         env:
           REPO: ${{ github.repository }}
-      
+
       - name: Create Release
         id: create_release
-        uses: actions/create-release@latest
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+        uses: ncipollo/release-action@v1
         with:
-          tag_name: ${{ github.event.inputs.version }}
-          release_name: Release ${{ github.event.inputs.version }}
+          tag: ${{ github.event.inputs.version }}
+          name: Release ${{ github.event.inputs.version }}
           body: |
             ${{ steps.Changelog.outputs.changelog }}
-          draft: false
-          prerelease: false
-          
+          artifacts: target/bonita-connector-slack-${{ github.event.inputs.version }}.zip
+
       - name: Release connector slack
         uses: samuelmeuli/action-maven-publish@v1
         with:
@@ -50,14 +47,3 @@ jobs:
           gpg_passphrase: ${{ secrets.gpg_passphrase }}
           nexus_username: ${{ secrets.ossrh_username }}
           nexus_password: ${{ secrets.ossrh_password }}
-  
-      - name: Upload Release Asset
-        id: upload-release-asset 
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-          asset_path: target/bonita-connector-slack-${{ github.event.inputs.version }}.zip
-          asset_name: bonita-connector-slack-${{ github.event.inputs.version }}.zip
-          asset_content_type: application/zip
