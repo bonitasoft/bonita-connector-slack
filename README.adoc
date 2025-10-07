@@ -41,7 +41,7 @@ This connector offers the possibility to send messages to a Slack channel. +
 To be used, a dedicated https://api.slack.com/authentication/basics[Slack application] with write permissions must be installed on the target Slack organization.
 
 == Usage
-The connector has four mandatory inputs: 
+The connector has four mandatory inputs:
 
 - *OAuth Access Token*: The OAuth access token of the installed slack application. See https://api.slack.com/apps[Your slack applications] to find it.
 - *Channel or Conversation ID*: Defines in with channel / conversation the message is to be sent. To retrieve it, right click on the channel, copy the link of the channel and keep the last segment of the URL (something like _CJC9BH4A9_)
@@ -60,7 +60,7 @@ Bonita connector scripts are written with Groovy, thus the syntax to use the sdk
 
 The input *blocks* expected by the connector is of type `org.bonitasoft.connectors.model.SlackConnectorBlocks`, an internal class that wraps a list of `com.slack.api.model.block.LayoutBlock`.
 
-Here is an example of a script that build a message using the Slack SDK: 
+Here is an example of a script that build a message using the Slack SDK:
 
 [source, Groovy]
 ----
@@ -83,7 +83,7 @@ return new SlackConnectorBlocks(header, divider, section)
 
 == Build
 
-To build this project, run the following command at the root of the project: 
+To build this project, run the following command at the root of the project:
 
 [source, bash]
 ----
@@ -94,7 +94,9 @@ To build this project, run the following command at the root of the project:
 
 To create a release:
 
-* Push a release commit on the main branch. This commit should update the pom version (remove -SNAPSHOT), and eventually the definition / implementation versions. 
-* Start the Github action _create release_. You'll have to define the release version, which should match the pom.xml version.
+* Push a release commit on the main branch. This commit should update the pom version (remove -SNAPSHOT), and eventually the definition / implementation versions.
+* Start the GitHub https://github.com/bonitasoft/bonita-connector-slack/actions/workflows/release.yml[release] action. You'll have to define the release version, which should match the pom.xml version.
 * When the release is done, push a new commit on the next branch to prepare the next dev version (e.g 1.0.0 -> 1.0.1-SNAPSHOT)
-* Do not forget to close and release the corresponding staging repository on sonartype.
+
+Once this is done, update the https://github.com/bonitasoft/bonita-marketplace[Bonita marketplace repository] with the new version of the connector.
+
